@@ -70,10 +70,10 @@ func (d *Date) setMinute(minute int) {
 	d.Minute = minute
 }
 
-func (d Date) isVaild() bool {
+func (d Date) isValid() bool {
 	// build a table represents for how many days per month
 	dayOfMonth := [12]int{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
-	if (d.Year%4 == 0 && d.Year%100 == 0) || (d.Year%400 == 0) {
+	if (d.Year%4 == 0 && d.Year%100 != 0) || (d.Year%400 == 0) {
 		dayOfMonth[1] = 29
 	}
 
@@ -81,7 +81,7 @@ func (d Date) isVaild() bool {
 		return false
 	}
 
-	if d.Day < 1 || d.Day > dayOfMonth[d.Month] {
+	if d.Day < 1 || d.Day > dayOfMonth[d.Month-1] {
 		return false
 	}
 
@@ -147,7 +147,7 @@ func stringToDate(dateString string) Date {
 // dateToString convert a Date struct to a string
 // with format YYYY-MM-DD/HH:mm
 func dateToString(date Date) string {
-	if date.isVaild() {
+	if date.isValid() {
 		return fmt.Sprintf("%04d-%02d-%02d/%02d:%02d", date.Year, date.Month, date.Day, date.Hour, date.Minute)
 	}
 	return "0000-00-00/00:00"
