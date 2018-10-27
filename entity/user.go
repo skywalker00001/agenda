@@ -70,7 +70,8 @@ func (u *User) SetPhone(newPhone string) {
 	u.Phone = newPhone
 }
 
-func (u *User) assign(user User) {
+// Assign *
+func (u *User) Assign(user User) {
 	u.Name = user.Name
 	u.Password = user.Password
 	u.Email = user.Email

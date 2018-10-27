@@ -30,47 +30,58 @@ func NewDate(year, month, day, hour, minute int) *Date {
 	}
 }
 
-func (d Date) getYear() int {
+// GetYear *
+func (d Date) GetYear() int {
 	return d.Year
 }
 
-func (d Date) getMonth() int {
+// GetMonth *
+func (d Date) GetMonth() int {
 	return d.Month
 }
 
-func (d Date) getDay() int {
+// GetDay *
+func (d Date) GetDay() int {
 	return d.Day
 }
 
-func (d Date) getHour() int {
+// GetHour *
+func (d Date) GetHour() int {
 	return d.Hour
 }
 
-func (d Date) getMinute() int {
+// GetMinute *
+func (d Date) GetMinute() int {
 	return d.Minute
 }
 
-func (d *Date) setYear(year int) {
+// SetYear *
+func (d *Date) SetYear(year int) {
 	d.Year = year
 }
 
-func (d *Date) setMonth(month int) {
+// SetMonth *
+func (d *Date) SetMonth(month int) {
 	d.Month = month
 }
 
-func (d *Date) setDay(day int) {
+// SetDay *
+func (d *Date) SetDay(day int) {
 	d.Day = day
 }
 
-func (d *Date) setHour(hour int) {
+// SetHour *
+func (d *Date) SetHour(hour int) {
 	d.Hour = hour
 }
 
-func (d *Date) setMinute(minute int) {
+// SetMinute *
+func (d *Date) SetMinute(minute int) {
 	d.Minute = minute
 }
 
-func (d Date) isValid() bool {
+// IsValid *
+func (d Date) IsValid() bool {
 	// build a table represents for how many days per month
 	dayOfMonth := [12]int{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 	if (d.Year%4 == 0 && d.Year%100 != 0) || (d.Year%400 == 0) {
@@ -147,13 +158,14 @@ func stringToDate(dateString string) Date {
 // dateToString convert a Date struct to a string
 // with format YYYY-MM-DD/HH:mm
 func dateToString(date Date) string {
-	if date.isValid() {
+	if date.IsValid() {
 		return fmt.Sprintf("%04d-%02d-%02d/%02d:%02d", date.Year, date.Month, date.Day, date.Hour, date.Minute)
 	}
 	return "0000-00-00/00:00"
 }
 
-func (d *Date) assign(date Date) {
+// Assign *
+func (d *Date) Assign(date Date) {
 	d.Year = date.Year
 	d.Month = date.Month
 	d.Day = date.Day
@@ -161,14 +173,16 @@ func (d *Date) assign(date Date) {
 	d.Minute = date.Minute
 }
 
-func (d Date) isEqual(date Date) bool {
+// IsEqual *
+func (d Date) IsEqual(date Date) bool {
 	if d.Year == date.Year && d.Month == date.Month && d.Day == date.Day && d.Hour == date.Hour && d.Minute == date.Minute {
 		return true
 	}
 	return false
 }
 
-func (d Date) isGreater(date Date) bool {
+// IsGreater *
+func (d Date) IsGreater(date Date) bool {
 	if d.Year > date.Year {
 		return true
 	} else if d.Year < date.Year {
@@ -202,7 +216,8 @@ func (d Date) isGreater(date Date) bool {
 	return false
 }
 
-func (d Date) isLess(date Date) bool {
+// IsLess *
+func (d Date) IsLess(date Date) bool {
 	if d.Year < date.Year {
 		return true
 	} else if d.Year > date.Year {
@@ -236,10 +251,12 @@ func (d Date) isLess(date Date) bool {
 	return false
 }
 
-func (d Date) isGreaterThanEqual(date Date) bool {
-	return !d.isLess(date)
+// IsGreaterThanEqual *
+func (d Date) IsGreaterThanEqual(date Date) bool {
+	return !d.IsLess(date)
 }
 
-func (d Date) isLessThanEqual(date Date) bool {
-	return !d.isGreater(date)
+// IsLessThanEqual *
+func (d Date) IsLessThanEqual(date Date) bool {
+	return !d.IsGreater(date)
 }

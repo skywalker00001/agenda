@@ -21,51 +21,63 @@ func NewMeeting(sponsor string, title string, startTime Date, endTime Date, part
 	}
 }
 
-func (m Meeting) getSponsor() string {
+// GetSponsor *
+func (m Meeting) GetSponsor() string {
 	return m.Sponsor
 }
 
-func (m Meeting) getTitle() string {
+// GetTitle *
+func (m Meeting) GetTitle() string {
 	return m.Title
 }
 
-func (m Meeting) getStartTime() Date {
+// GetStartTime *
+func (m Meeting) GetStartTime() Date {
 	return m.StartTime
 }
 
-func (m Meeting) getEndTime() Date {
+// GetEndTime *
+func (m Meeting) GetEndTime() Date {
 	return m.EndTime
 }
 
-func (m Meeting) getParticipators() []string {
+// GetParticipators *
+func (m Meeting) GetParticipators() []string {
 	return m.Participators
 }
 
-func (m *Meeting) setSponsor(sponsor string) {
+// SetSponsor *
+func (m *Meeting) SetSponsor(sponsor string) {
 	m.Sponsor = sponsor
 }
 
-func (m *Meeting) setTitle(title string) {
+// SetTitle *
+func (m *Meeting) SetTitle(title string) {
 	m.Title = title
 }
 
-func (m *Meeting) setStartTime(startTime Date) {
-	m.StartTime.assign(startTime)
+// SetStartTime *
+func (m *Meeting) SetStartTime(startTime Date) {
+	m.StartTime.Assign(startTime)
 }
 
-func (m *Meeting) setEndTime(endTime Date) {
-	m.EndTime.assign(endTime)
+// SetEndTime *
+func (m *Meeting) SetEndTime(endTime Date) {
+	m.EndTime.Assign(endTime)
 }
 
-func (m *Meeting) setParticipators(participators []string) {
+// SetParticipators *
+func (m *Meeting) SetParticipators(participators []string) {
 	m.Participators = append([]string{}, participators...)
 }
 
-func (m *Meeting) addParticipator(participator string) {
+// AddParticipator *
+func (m *Meeting) AddParticipator(participator string) {
 	m.Participators = append(m.Participators, participator)
 }
 
-func (m *Meeting) removeParticipator(participator string) {
+// RemoveParticipator *
+func (m *Meeting) RemoveParticipator(participator string) {
 	// find the index of participator
 	for i, p := range m.Participators {
 		if p == participator {
@@ -75,7 +87,8 @@ func (m *Meeting) removeParticipator(participator string) {
 	}
 }
 
-func (m *Meeting) isParticipator(username string) bool {
+// IsParticipator *
+func (m *Meeting) IsParticipator(username string) bool {
 	for _, p := range m.Participators {
 		if p == username {
 			return true
@@ -84,10 +97,11 @@ func (m *Meeting) isParticipator(username string) bool {
 	return false
 }
 
-func (m *Meeting) assign(meeting Meeting) {
+// Assign *
+func (m *Meeting) Assign(meeting Meeting) {
 	m.Sponsor = meeting.Sponsor
 	m.Title = meeting.Title
-	m.StartTime.assign(meeting.StartTime)
-	m.EndTime.assign(meeting.EndTime)
+	m.StartTime.Assign(meeting.StartTime)
+	m.EndTime.Assign(meeting.EndTime)
 	m.Participators = append([]string{}, meeting.Participators...)
 }
