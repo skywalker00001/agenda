@@ -69,3 +69,10 @@ func (u User) GetPhone() string {
 func (u *User) SetPhone(newPhone string) {
 	u.Phone = newPhone
 }
+
+func (u *User) assign(user User) {
+	u.Name = user.Name
+	u.Password = user.Password
+	u.Email = user.Email
+	u.Phone = user.Phone
+}
