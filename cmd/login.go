@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/skywalker00001/agenda/entity"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +32,29 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("login called")
+		//fmt.Println("login called")
+		username, _ := cmd.Flags().GetString("username")
+		password, _ := cmd.Flags().GetString("password")
+
+		instance := entity.GetStorage()
+
+		if instance.GetCurUser().GetName() != "" {
+			fmt.Println("You have already logged in, please log out first!")
+			return
+		}
+
+		filter := func(u *entity.User) bool {
+			return u.GetName() == username && u.GetPassword() == password
+		}
+
+		ulist := instance.QueryUser(filter)
+
+		if len(ulist) == 0 {
+			fmt.Println("Wrong username or password!")
+		} else {
+			instance.SetCurUser(ulist[0])
+			fmt.Println("Log in successfully!")
+		}
 	},
 }
 
@@ -39,7 +62,8 @@ func init() {
 	rootCmd.AddCommand(loginCmd)
 
 	// Here you will define your flags and configuration settings.
-
+	loginCmd.Flags().StringP("username", "u", "", "login name")
+	loginCmd.Flags().StringP("password", "p", "", "login password")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// loginCmd.PersistentFlags().String("foo", "", "A help for foo")
