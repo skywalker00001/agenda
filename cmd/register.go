@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
 
@@ -31,15 +32,33 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		username, _ := cmd.Flags().GetString("user")
-		fmt.Println("register called by " + username)
+		username, _ := cmd.Flags().GetString("username")
+		password, _ := cmd.Flags().GetString("password")
+		email, _ := cmd.Flags().GetString("email")
+		phone, _ := cmd.Flags().GetString("phone")
+
+		instance := entity.GetStorage()
+		filter := func(u *entity.User) bool {
+			return u.GetName() == username
+		}
+
+		ulist := instance.QueryUser(filter)
+		if len(ulist) == 0 {
+			instance.CreateUser(*entity.NewUser(username, password, email, phone))
+			fmt.Println("Register new user successfully!")
+		} else {
+			fmt.Println("Duplicate username, please change another one!")
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(registerCmd)
-
 	// Here you will define your flags and configuration settings.
+	registerCmd.Flags().StringP("username", "u", "Anonymous", "username message")
+	registerCmd.Flags().StringP("password", "p", "null", "password message")
+	registerCmd.Flags().StringP("email", "e", "null", "email message")
+	registerCmd.Flags().StringP("phone", "t", "null", "phone message")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
