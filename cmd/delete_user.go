@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +32,47 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("deleteUser called")
+		//fmt.Println("deleteUser called")
+
+		instance := entity.GetStorage()
+		curU := instance.GetCurUser()
+
+		if curU.GetName() != "" {
+			fmt.Println("You have not logged in yet, please log in first!")
+			return
+		}
+
+		fmt.Println(curU.GetName())
+		fmt.Println("hh!")
+		ufilter := func(u *entity.User) bool {
+			return u.GetName() == curU.GetName()
+		}
+
+		mfilter1 := func(m *entity.Meeting) bool {
+			return m.GetSponsor() == curU.GetName()
+		}
+		mfilter2 := func(m *entity.Meeting) bool {
+			return m.IsParticipator(curU.GetName())
+		}
+		mswitcher := func(m *entity.Meeting) {
+			m.RemoveParticipator(curU.GetName())
+		}
+
+		if instance.DeleteUser(ufilter) > 0 {
+			instance.DeleteMeeting(mfilter1)
+			if instance.UpdateMeeting(mfilter2, mswitcher) > 0 {
+				mfilter3 := func(m *entity.Meeting) bool {
+					return len(m.GetParticipators()) == 0
+				}
+				instance.DeleteMeeting(mfilter3)
+			}
+			instance.SetCurUser(*entity.NewUser("", "", "", ""))
+			fmt.Println("Delete successfully!")
+
+		} else {
+			fmt.Println("Fail to delete!")
+		}
+
 	},
 }
 
