@@ -189,6 +189,7 @@ func (s Storage) GetCurUser() User {
 // SetCurUser *
 func (s *Storage) SetCurUser(u User) {
 	s.curUser.Assign(u)
+	writeToFile()
 }
 
 func init() {
