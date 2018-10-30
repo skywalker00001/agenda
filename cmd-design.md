@@ -57,10 +57,10 @@ agenda cm -t=xxx -s=xxx -e=xxx [participators]
 
 ## 增删会议参与者(add_meeting_user | delete_meeting_user)
 ```bash
-agenda addmu [participators]
+agenda addmu -t=xxx [participators]
 ```
 ```bash
-ageada delmu [participators]
+ageada delmu -t=xxx [participators]
 ```
 1. 已登录的用户可以向自己发起的某一会议增加/删除 参与者 。
 2. 增加参与者时需要做 时间重叠 判断（允许仅有端点重叠的情况）。
