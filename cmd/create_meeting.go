@@ -34,8 +34,8 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		//fmt.Println("createMeeting called")
 		title, _ := cmd.Flags().GetString("title")
-		startTime_s, _ := cmd.Flags().GetString("starttime")
-		endTime_s, _ := cmd.Flags().GetString("endtime")
+		startTimeS, _ := cmd.Flags().GetString("starttime")
+		endTimeS, _ := cmd.Flags().GetString("endtime")
 		//ptcpt, _ := cmd.Flags().GetStringSlice("participator")
 		ptcpt := cmd.Flags().Args()
 
@@ -49,11 +49,11 @@ to quickly create a Cobra application.`,
 			fmt.Println("You do not enter title, please input again!")
 			return
 		}
-		if startTime_s == "" {
+		if startTimeS == "" {
 			fmt.Println("You do not enter start time, please input again!")
 			return
 		}
-		if endTime_s == "" {
+		if endTimeS == "" {
 			fmt.Println("You do not enter end time, please input again!")
 			return
 		}
@@ -63,8 +63,8 @@ to quickly create a Cobra application.`,
 		}
 
 		sponsor := instance.GetCurUser().GetName()
-		startTime := entity.StringToDate(startTime_s)
-		endTime := entity.StringToDate(endTime_s)
+		startTime := entity.StringToDate(startTimeS)
+		endTime := entity.StringToDate(endTimeS)
 
 		if !startTime.IsValid() {
 			fmt.Println("Invalid start time!")
@@ -128,9 +128,8 @@ to quickly create a Cobra application.`,
 			if startTime.IsGreaterThanEqual(m.GetEndTime()) ||
 				endTime.IsLessThanEqual(m.GetStartTime()) {
 				return false
-			} else {
-				return true
 			}
+			return true
 		}
 		if len(instance.QueryMeeting(mfilter2)) > 0 {
 			fmt.Println("Sponsor's time conflict!")
@@ -145,9 +144,8 @@ to quickly create a Cobra application.`,
 				if startTime.IsGreaterThanEqual(m.GetEndTime()) ||
 					endTime.IsLessThanEqual(m.GetStartTime()) {
 					return false
-				} else {
-					return true
 				}
+				return true
 			}
 			if len(instance.QueryMeeting(mfilter3)) > 0 {
 				fmt.Println("Participator's time conflict!")
