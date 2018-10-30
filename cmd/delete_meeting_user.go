@@ -15,7 +15,9 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
+
+	"github.com/7cthunder/agenda/entity"
 
 	"github.com/spf13/cobra"
 )
@@ -31,12 +33,73 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("deleteMeetingUser called")
+		title, _ := cmd.Flags().GetString("title")
+		participators := cmd.Flags().Args()
+
+		storage := entity.GetStorage()
+
+		if storage.GetCurUser().GetName() == "" {
+			log.Println("You have not logged in yet, please log in first!")
+			return
+		}
+
+		if title == "" {
+			log.Println("You do not enter a title for meeting, please enter it!")
+			return
+		}
+
+		mfilter := func(m *entity.Meeting) bool {
+			return m.GetTitle() == title
+		}
+
+		meetings := storage.QueryMeeting(mfilter)
+		if len(meetings) == 0 {
+			log.Println("This meeting is not existed, please enter a correct title!")
+			return
+		}
+
+		for _, p := range participators {
+			isInMeeting := false
+			for _, u := range meetings[0].GetParticipators() {
+				if u == p {
+					isInMeeting = true
+				}
+			}
+			if !isInMeeting {
+				log.Println(p, "is not in this meeting, please check the participators list of this meeting!")
+				return
+			}
+			if p == meetings[0].GetSponsor() {
+				log.Println("You can't delete yourself from this meeting for you're the sponsor for it!\n If you want to delete this meeting, please use command 'delm'!")
+				return
+			}
+		}
+
+		storage.UpdateMeeting(
+			mfilter,
+			func(m *entity.Meeting) {
+				for _, u := range participators {
+					m.RemoveParticipator(u)
+				}
+			})
+
+		meetings = storage.QueryMeeting(mfilter)
+
+		if len(meetings[0].GetParticipators()) == 0 {
+			storage.DeleteMeeting(func(m *entity.Meeting) bool {
+				return m.GetTitle() == title
+			})
+		}
+
+		log.Println("You have successfully removed your designated participant from this meeting!")
+
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(deleteMeetingUserCmd)
+
+	deleteMeetingUserCmd.Flags().StringP("title", "t", "", "title of meeting")
 
 	// Here you will define your flags and configuration settings.
 
