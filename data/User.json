@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-[{"Name":"Anonymous","Password":"null","Email":"null","Phone":"null"},{"Name":"houyi","Password":"123","Email":"552086268@qq.com","Phone":"15989003017"}]
-=======
-[{"Name":"Anonymous","Password":"","Email":"","Phone":""},{"Name":"houyi","Password":"123","Email":"44","Phone":"3333"}]
->>>>>>> 65a7037c6598d74f81c9df00d3ca944ba40ed45e
+[{"Name":"user1","Password":"user1","Email":"user1","Phone":"user1"},{"Name":"user2","Password":"user2","Email":"email2","Phone":"phone2"},{"Name":"user3","Password":"pass3","Email":"email3","Phone":"phone3"}]

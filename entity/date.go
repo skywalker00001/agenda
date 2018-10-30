@@ -111,7 +111,7 @@ func (d Date) IsValid() bool {
 // param: a string with format YYYY-MM-DD/HH:mm
 // if the string doesn't fit the format,
 // return an uncompleted Date struct
-func stringToDate(dateString string) Date {
+func StringToDate(dateString string) Date {
 	d := Date{}
 
 	// YYYY-MM-DD/HH:mm
@@ -157,7 +157,7 @@ func stringToDate(dateString string) Date {
 
 // dateToString convert a Date struct to a string
 // with format YYYY-MM-DD/HH:mm
-func dateToString(date Date) string {
+func DateToString(date Date) string {
 	if date.IsValid() {
 		return fmt.Sprintf("%04d-%02d-%02d/%02d:%02d", date.Year, date.Month, date.Day, date.Hour, date.Minute)
 	}
