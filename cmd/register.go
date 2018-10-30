@@ -38,27 +38,44 @@ to quickly create a Cobra application.`,
 		phone, _ := cmd.Flags().GetString("phone")
 
 		instance := entity.GetStorage()
+
+		if username == "" {
+			fmt.Println("You do not enter username, please input again!")
+			return
+		}
 		filter := func(u *entity.User) bool {
 			return u.GetName() == username
 		}
-
 		ulist := instance.QueryUser(filter)
-		if len(ulist) == 0 {
-			instance.CreateUser(*entity.NewUser(username, password, email, phone))
-			fmt.Println("Register new user successfully!")
-		} else {
+		if len(ulist) > 0 {
 			fmt.Println("Duplicate username, please change another one!")
+			return
 		}
+		if password == "" {
+			fmt.Println("You do not enter password, please input again!")
+			return
+		}
+		if email == "" {
+			fmt.Println("You do not enter email, please input again!")
+			return
+		}
+		if phone == "" {
+			fmt.Println("You do not enter phone, please input again!")
+			return
+		}
+
+		instance.CreateUser(*entity.NewUser(username, password, email, phone))
+		fmt.Println("Register new user successfully!")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(registerCmd)
 	// Here you will define your flags and configuration settings.
-	registerCmd.Flags().StringP("username", "u", "Anonymous", "username message")
-	registerCmd.Flags().StringP("password", "p", "null", "password message")
-	registerCmd.Flags().StringP("email", "e", "null", "email message")
-	registerCmd.Flags().StringP("phone", "t", "null", "phone message")
+	registerCmd.Flags().StringP("username", "u", "", "username message")
+	registerCmd.Flags().StringP("password", "p", "", "password message")
+	registerCmd.Flags().StringP("email", "e", "", "email message")
+	registerCmd.Flags().StringP("phone", "t", "", "phone message")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
