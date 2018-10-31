@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
@@ -38,27 +38,44 @@ to quickly create a Cobra application.`,
 		phone, _ := cmd.Flags().GetString("phone")
 
 		instance := entity.GetStorage()
+
+		if username == "" {
+			log.Println("You do not enter username, please input again!")
+			return
+		}
 		filter := func(u *entity.User) bool {
 			return u.GetName() == username
 		}
-
 		ulist := instance.QueryUser(filter)
-		if len(ulist) == 0 {
-			instance.CreateUser(*entity.NewUser(username, password, email, phone))
-			fmt.Println("Register new user successfully!")
-		} else {
-			fmt.Println("Duplicate username, please change another one!")
+		if len(ulist) > 0 {
+			log.Println("Duplicate username, please change another one!")
+			return
 		}
+		if password == "" {
+			log.Println("You do not enter password, please input again!")
+			return
+		}
+		if email == "" {
+			log.Println("You do not enter email, please input again!")
+			return
+		}
+		if phone == "" {
+			log.Println("You do not enter phone, please input again!")
+			return
+		}
+
+		instance.CreateUser(*entity.NewUser(username, password, email, phone))
+		log.Println("Register new user successfully!")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(registerCmd)
 	// Here you will define your flags and configuration settings.
-	registerCmd.Flags().StringP("username", "u", "Anonymous", "username message")
-	registerCmd.Flags().StringP("password", "p", "null", "password message")
-	registerCmd.Flags().StringP("email", "e", "null", "email message")
-	registerCmd.Flags().StringP("phone", "t", "null", "phone message")
+	registerCmd.Flags().StringP("username", "u", "", "username message")
+	registerCmd.Flags().StringP("password", "p", "", "password message")
+	registerCmd.Flags().StringP("email", "e", "", "email message")
+	registerCmd.Flags().StringP("phone", "t", "", "phone message")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:

@@ -111,9 +111,9 @@ func (s *Storage) QueryUser(filter uFilter) []User {
 // UpdateUser *
 func (s *Storage) UpdateUser(filter uFilter, switcher uSwitcher) int {
 	count := 0
-	for _, user := range s.userList {
-		if filter(&user) {
-			switcher(&user)
+	for i := 0; i < len(s.userList); i++ {
+		if filter(&(s.userList[i])) {
+			switcher(&(s.userList[i]))
 			count++
 		}
 	}
@@ -156,9 +156,9 @@ func (s *Storage) QueryMeeting(filter mFilter) []Meeting {
 // UpdateMeeting *
 func (s *Storage) UpdateMeeting(filter mFilter, switcher mSwitcher) int {
 	count := 0
-	for _, meeting := range s.meetingList {
-		if filter(&meeting) {
-			switcher(&meeting)
+	for i := 0; i < len(s.meetingList); i++ {
+		if filter(&(s.meetingList[i])) {
+			switcher(&(s.meetingList[i]))
 			count++
 		}
 	}
