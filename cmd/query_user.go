@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
@@ -37,7 +37,7 @@ to quickly create a Cobra application.`,
 		instance := entity.GetStorage()
 
 		if instance.GetCurUser().GetName() == "" {
-			fmt.Println("You have not logged in yet, please log in first!")
+			log.Println("You have not logged in yet, please log in first!")
 			return
 		}
 
@@ -46,10 +46,10 @@ to quickly create a Cobra application.`,
 		}
 		ulist := instance.QueryUser(filter)
 
-		fmt.Println("Name Email Telephone")
+		log.Println("Name Email Telephone")
 
 		for i, user := range ulist {
-			fmt.Printf("User%d: %s %s %s\n", i+1, user.Name, user.Email, user.Phone)
+			log.Printf("User%d: %s %s %s\n", i+1, user.Name, user.Email, user.Phone)
 		}
 	},
 }
