@@ -43,6 +43,15 @@ to quickly create a Cobra application.`,
 			return
 		}
 
+		if username == "" {
+			fmt.Println("You do not enter username, please input again!")
+			return
+		}
+		if password == "" {
+			fmt.Println("You do not enter password, please input again!")
+			return
+		}
+
 		filter := func(u *entity.User) bool {
 			return u.GetName() == username && u.GetPassword() == password
 		}

@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+
 	entity "github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -46,8 +47,8 @@ to quickly create a Cobra application.`,
 		if len(participators) == 0 {
 			fmt.Println("you must add someone")
 			return
-		} 
-		
+		}
+
 		for i := 0; i < len(participators); i++ {
 			filter := func(u *entity.User) bool {
 				return u.GetName() == participators[i]
@@ -56,11 +57,11 @@ to quickly create a Cobra application.`,
 				fmt.Println(participators[i] + " isn't existed")
 			}
 		}
-			
+
 		filter1 := func(m *entity.Meeting) bool {
 			return curU.GetName() == m.GetSponsor() && title == m.GetTitle()
 		}
-		meeting :=  instance.QueryMeeting(filter1)
+		meeting := instance.QueryMeeting(filter1)
 		if len(meeting) == 0 {
 			fmt.Println("you don't sponsor this meeting")
 			return
@@ -68,7 +69,7 @@ to quickly create a Cobra application.`,
 
 		for i := 0; i < len(participators); i++ {
 			for j := i + 1; j < len(participators); j++ {
-				if (participators[i] == participators[j]) {
+				if participators[i] == participators[j] {
 					fmt.Println("The participators you add can't repeat")
 					return
 				}
@@ -76,14 +77,14 @@ to quickly create a Cobra application.`,
 		}
 
 		for _, p := range participators {
-			if (meeting[0].IsParticipator(p)) {
+			if meeting[0].IsParticipator(p) {
 				fmt.Println(p + " is in the meeting")
 				return
 			}
 		}
 
 		for _, p := range participators {
-			if (curU.GetName() == p) {
+			if curU.GetName() == p {
 				fmt.Println("you add yourself wrongly")
 				return
 			}
@@ -95,23 +96,22 @@ to quickly create a Cobra application.`,
 			filter2 := func(m *entity.Meeting) bool {
 				mST := m.GetStartTime()
 				mET := m.GetEndTime()
-				if  (m.IsParticipator(p) || m.GetSponsor() == p) &&
+				if (m.IsParticipator(p) || m.GetSponsor() == p) &&
 					((startTime.IsGreaterThanEqual(mST) && startTime.IsLess(mET)) ||
-					(endTime.IsGreater(mST) && endTime.IsLessThanEqual(mET)) || 
-					(startTime.IsLessThanEqual(mST) && endTime.IsGreaterThanEqual(mET))) {
-						return true
-				} else {
-					return false
+						(endTime.IsGreater(mST) && endTime.IsLessThanEqual(mET)) ||
+						(startTime.IsLessThanEqual(mST) && endTime.IsGreaterThanEqual(mET))) {
+					return true
 				}
+				return false
 			}
-			if len(instance.QueryMeeting(filter2)) >  0 {
+			if len(instance.QueryMeeting(filter2)) > 0 {
 				fmt.Println("There are conflicts between  participators' time and meeting's time ", p)
 				return
-			} 
+			}
 		}
 
-		for _, p := range(participators) {
-			mSwitch := func(m *entity.Meeting){
+		for _, p := range participators {
+			mSwitch := func(m *entity.Meeting) {
 				m.AddParticipator(p)
 			}
 			instance.UpdateMeeting(filter1, mSwitch)
