@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
@@ -40,7 +40,7 @@ to quickly create a Cobra application.`,
 		instance := entity.GetStorage()
 
 		if username == "" {
-			fmt.Println("You do not enter username, please input again!")
+			log.Println("You do not enter username, please input again!")
 			return
 		}
 		filter := func(u *entity.User) bool {
@@ -48,24 +48,24 @@ to quickly create a Cobra application.`,
 		}
 		ulist := instance.QueryUser(filter)
 		if len(ulist) > 0 {
-			fmt.Println("Duplicate username, please change another one!")
+			log.Println("Duplicate username, please change another one!")
 			return
 		}
 		if password == "" {
-			fmt.Println("You do not enter password, please input again!")
+			log.Println("You do not enter password, please input again!")
 			return
 		}
 		if email == "" {
-			fmt.Println("You do not enter email, please input again!")
+			log.Println("You do not enter email, please input again!")
 			return
 		}
 		if phone == "" {
-			fmt.Println("You do not enter phone, please input again!")
+			log.Println("You do not enter phone, please input again!")
 			return
 		}
 
 		instance.CreateUser(*entity.NewUser(username, password, email, phone))
-		fmt.Println("Register new user successfully!")
+		log.Println("Register new user successfully!")
 	},
 }
 
