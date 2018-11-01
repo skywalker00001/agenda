@@ -24,9 +24,9 @@ var addMeetingUserCmd = &cobra.Command{
 	Use:   "addmu -t=[title] [participators]",
 	Short: "Add meeting members to the meeting which current user created",
 	Long: `Add meeting members into the meeting:
-	1. Make sure you have sponsored the meeting with the title
-	2. Make sure the participators have not repeat and have not been in the meeting
-	3. Make sure there aren't conflicts between  participators' time and meeting's time `,
+1. Make sure you have sponsored the meeting with the title
+2. Make sure the participators have not repeat and have not been in the meeting
+3. Make sure there aren't conflicts between  participators' time and meeting's time `,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[addmu]")
 
@@ -34,9 +34,9 @@ var addMeetingUserCmd = &cobra.Command{
 		curU := instance.GetCurUser()
 		title, _ := cmd.Flags().GetString("title")
 		participators := cmd.Flags().Args()
-		
-		logger.Println("You are calling addmu -t=" + title + " ", participators)
-		
+
+		logger.Println("You are calling addmu -t="+title+" ", participators)
+
 		if curU.GetName() == "" {
 			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return

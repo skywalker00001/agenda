@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -25,17 +26,16 @@ var queryMeetingCmd = &cobra.Command{
 	Use:   "qym -s=[startTime] -e=[endTime]",
 	Short: "Query meetings start from [startTime] to [endTime]",
 	Long: `You can query meetings start from [startTime] to [endTime]
-	1. A string of Date has format YYYY-MM-DD/HH:mm
-	2. The endTime must later than startTime`,
+1. A string of Date has format YYYY-MM-DD/HH:mm
+2. The endTime must later than startTime`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[qym]")
-		
 
 		startTime, _ := cmd.Flags().GetString("stime")
 		endTime, _ := cmd.Flags().GetString("etime")
 
 		logger.Println("You are calling qym -s=", startTime, " -e=", endTime)
-		
+
 		if startTime == "" || endTime == "" {
 			logger.Println("ERROR: You have not set the start time or end time of the meeting yet, please do it first!")
 			return
@@ -57,12 +57,12 @@ var queryMeetingCmd = &cobra.Command{
 			return false
 		}
 		mlist := instance.QueryMeeting(filter)
-		
+
 		s := fmt.Sprintf("ID        Sponsor         Title           StartTime            EndTime\n")
 
 		for i, meeting := range mlist {
-			s = s + fmt.Sprintf("Meeting%d: %-15s %-15s %-20s %s\n", i+1, meeting.GetSponsor(), meeting.GetTitle(), 
-										entity.DateToString(meeting.GetStartTime()), entity.DateToString(meeting.GetEndTime()))
+			s = s + fmt.Sprintf("Meeting%d: %-15s %-15s %-20s %s\n", i+1, meeting.GetSponsor(), meeting.GetTitle(),
+				entity.DateToString(meeting.GetStartTime()), entity.DateToString(meeting.GetEndTime()))
 			s = s + fmt.Sprintf("Meeting%d-Participators:", i+1)
 			participators := meeting.GetParticipators()
 			for j := 0; j < len(participators); j++ {
