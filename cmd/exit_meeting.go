@@ -21,19 +21,21 @@ import (
 
 // exitMeetingCmd represents the exitMeeting command
 var exitMeetingCmd = &cobra.Command{
-	Use:   "exitm",
+	Use:   "exitm -t=[title]",
 	Short: "Exit a meeting which current users participated",
-	Long: `Exit a meeting
-	1. Make sure you enter a title for the meeting
-	2. Make sure you have  participated in this meeting`,
+	Long: `You can exit a meeting you participator
+	1. Make sure you input the title of the meeting
+	2. Make sure you have participatored the meeting
+	3. If the number of participators is 0 after doing this command, this meeting will be dissolved`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[exitm]")
-		logger.Println("You are calling exitm")
-
+		
 		title, _ := cmd.Flags().GetString("title")
+		
+		logger.Println("You are calling exitm -t=", title)
+		
 		if title == "" {
 			logger.Println("ERROR: You have not set the title yet, please do it first!")
-			return
 		}
 
 		instance := entity.GetStorage()
