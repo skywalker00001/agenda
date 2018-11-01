@@ -15,6 +15,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -23,12 +25,9 @@ import (
 var queryUserCmd = &cobra.Command{
 	Use:   "qyu",
 	Short: "Query all users if you have logined",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Query all users if you have logined:
+1. This command can be used only after you have logged in
+2. The result will show you all registered users with format 'Name Email Telephone'`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[qyu]")
 		logger.Println("You are calling qyu")
@@ -45,24 +44,15 @@ to quickly create a Cobra application.`,
 		}
 		ulist := instance.QueryUser(filter)
 
-		logger.Println("Name Email Telephone")
+		s := fmt.Sprintf("ID        Name                 Email                Phone\n")
 
 		for i, user := range ulist {
-			logger.Printf("User%d: %s %s %s\n", i+1, user.Name, user.Email, user.Phone)
+			s = s + fmt.Sprintf("User%d:    %-20s %-20s %-20s\n", i+1, user.Name, user.Email, user.Phone)
 		}
+		logger.Printf("The result is: \n%s", s)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(queryUserCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// queryUserCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// queryUserCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -21,14 +21,15 @@ import (
 
 // createMeetingCmd represents the createMeeting command
 var createMeetingCmd = &cobra.Command{
-	Use:   "cm",
+	Use:   "cm -t=[title] -s=[starttime] -e=[endtime] [participators]",
 	Short: "Create a meeting with title, startTime, endTime and participators",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Create a meeting with title, startTime, endTime and participators:
+1. Make sure you have logged in first, and when you create meeting, you will be sponsor
+2. 'Title' is unique of all meetings, if this title has been used, please change another one
+3. Start time and end time should be in format with 'XXXX-XX-XX/XX:XX'
+4. Participators cannot be empty
+5. If sponsor's time or participator's time is conflict with their former meetings, 
+the meeting will fail to create`,
 	Run: func(cmd *cobra.Command, args []string) {
 		title, _ := cmd.Flags().GetString("title")
 		startTimeS, _ := cmd.Flags().GetString("starttime")
@@ -36,7 +37,7 @@ to quickly create a Cobra application.`,
 		ptcpt := cmd.Flags().Args()
 
 		logger := entity.NewLogger("[cm]")
-		logger.Println("You are calling cm")
+		logger.Println("You are calling cm -t="+title+" -s="+startTimeS+" -e="+endTimeS, ptcpt)
 
 		instance := entity.GetStorage()
 
@@ -151,16 +152,7 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(createMeetingCmd)
 
-	// Here you will define your flags and configuration settings.
 	createMeetingCmd.Flags().StringP("title", "t", "", "title of meeitng")
 	createMeetingCmd.Flags().StringP("starttime", "s", "", "start time of meeting")
 	createMeetingCmd.Flags().StringP("endtime", "e", "", "end time of meeting")
-	//createMeetingCmd.Flags().StringSliceP("participator", "p", []string{}, "participators of meeting")
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createMeetingCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// createMeetingCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

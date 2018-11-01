@@ -21,14 +21,10 @@ import (
 
 // registerCmd represents the register command
 var registerCmd = &cobra.Command{
-	Use:   "register",
-	Short: "Register an account with username, password, email and phone",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "register -u=[username] -p=[password] -e=[email] -t=[phone]",
+	Short: "Register a new account with username, password, email and phone",
+	Long: `Register a new account with username, password, email and phone:
+1. If the username you enter has been registered, you should change another username`,
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
 		password, _ := cmd.Flags().GetString("password")
@@ -36,7 +32,7 @@ to quickly create a Cobra application.`,
 		phone, _ := cmd.Flags().GetString("phone")
 
 		logger := entity.NewLogger("[register]")
-		logger.Println("You are calling register")
+		logger.Println("You are calling register -u=" + username + " -p=" + password + " -e=" + email + " -t=" + phone)
 
 		instance := entity.GetStorage()
 
@@ -72,17 +68,10 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(registerCmd)
-	// Here you will define your flags and configuration settings.
+
 	registerCmd.Flags().StringP("username", "u", "", "username message")
 	registerCmd.Flags().StringP("password", "p", "", "password message")
 	registerCmd.Flags().StringP("email", "e", "", "email message")
 	registerCmd.Flags().StringP("phone", "t", "", "phone message")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// registerCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// registerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
