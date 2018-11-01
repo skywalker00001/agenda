@@ -23,10 +23,9 @@ import (
 var exitMeetingCmd = &cobra.Command{
 	Use:   "exitm -t=[title]",
 	Short: "Exit a meeting which current users participated",
-	Long: `You can exit a meeting you participator
-	1. Make sure you input the title of the meeting
-	2. Make sure you have participatored the meeting
-	3. If the number of participators is 0 after doing this command, this meeting will be dissolved`,
+	Long: `Exit a meeting
+	1. Make sure you enter a title for the meeting
+	2. Make sure you have  participated in this meeting`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[exitm]")
 		
@@ -36,6 +35,7 @@ var exitMeetingCmd = &cobra.Command{
 		
 		if title == "" {
 			logger.Println("ERROR: You have not set the title yet, please do it first!")
+			return
 		}
 
 		instance := entity.GetStorage()
@@ -75,13 +75,4 @@ var exitMeetingCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(exitMeetingCmd)
 	exitMeetingCmd.Flags().StringP("title", "t", "", "exit meeting")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// exitMeetingCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// exitMeetingCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
