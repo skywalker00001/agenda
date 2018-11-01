@@ -21,23 +21,22 @@ import (
 
 // addMeetingUserCmd represents the addMeetingUser command
 var addMeetingUserCmd = &cobra.Command{
-	Use:   "addmu",
+	Use:   "addmu -t=[title] [participators]",
 	Short: "Add meeting members to the meeting which current user created",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Add meeting members into the meeting:
+	1. Make sure you have sponsored the meeting with the title
+	2. Make sure the participators have not repeat and have not been in the meeting
+	3. Make sure there aren't conflicts between  participators' time and meeting's time `,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[addmu]")
-
-		logger.Println("You are calling addmu")
 
 		instance := entity.GetStorage()
 		curU := instance.GetCurUser()
 		title, _ := cmd.Flags().GetString("title")
 		participators := cmd.Flags().Args()
+		
+		logger.Println("You are calling addmu -t=" + title + " ", participators)
+		
 		if curU.GetName() == "" {
 			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return
@@ -127,14 +126,5 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(addMeetingUserCmd)
-
-	// Here you will define your flags and configuration settings.
 	addMeetingUserCmd.Flags().StringP("title", "t", "", "meeting title")
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// addMeetingUserCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// addMeetingUserCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

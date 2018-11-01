@@ -21,19 +21,19 @@ import (
 
 // exitMeetingCmd represents the exitMeeting command
 var exitMeetingCmd = &cobra.Command{
-	Use:   "exitm",
+	Use:   "exitm -t=[title]",
 	Short: "Exit a meeting which current users participated",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `You can exit a meeting you participator
+	1. Make sure you input the title of the meeting
+	2. Make sure you have participatored the meeting
+	3. If the number of participators is 0 after doing this command, this meeting will be dissolved`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[exitm]")
-		logger.Println("You are calling exitm")
-
+		
 		title, _ := cmd.Flags().GetString("title")
+		
+		logger.Println("You are calling exitm -t=", title)
+		
 		if title == "" {
 			logger.Println("ERROR: You have not set the title yet, please do it first!")
 		}
@@ -75,13 +75,4 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(exitMeetingCmd)
 	exitMeetingCmd.Flags().StringP("title", "t", "", "exit meeting")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// exitMeetingCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// exitMeetingCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
