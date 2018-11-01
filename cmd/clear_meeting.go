@@ -23,16 +23,9 @@ import (
 var clearMeetingCmd = &cobra.Command{
 	Use:   "clm",
 	Short: "Clear all meetings which current user created",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Clear all meetings which current user created`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[clm]")
-		logger.Println("You are calling clm")
-
 		logger.Println("You are calling clm")
 
 		instance := entity.GetStorage()
