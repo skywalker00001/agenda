@@ -58,9 +58,8 @@ var queryMeetingCmd = &cobra.Command{
 		if len(mlist) == 0 {
 			logger.Println("You have no meetings at this time.")
 			return
-		} else {
-			logger.Println("Seq_num  Sponsor  Title  StartTime  EndTime")
 		}
+		logger.Println("Seq_num  Sponsor  Title  StartTime  EndTime")
 
 		for i, meeting := range mlist {
 			logger.Printf("Meeting%d: %s %s %s %s\n", i+1, meeting.GetSponsor(), meeting.GetTitle(), startTime, endTime)
