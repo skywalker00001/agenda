@@ -15,9 +15,6 @@
 package cmd
 
 import (
-	"log"
-	"io"
-	"os"
 	entity "github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -33,22 +30,22 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		file, _ := os.OpenFile("./data/log.txt", os.O_CREATE | os.O_WRONLY | os.O_APPEND, 0666)
-		info := log.New(io.MultiWriter(file, os.Stdout), "[delm]", log.Ldate | log.Ltime)
 
-		info.Println("You are calling delm")
+		logger := entity.NewLogger("[delm]")
+
+		logger.Println("You are calling delm")
 
 		instance := entity.GetStorage()
 		curU := instance.GetCurUser()
 		title, _ := cmd.Flags().GetString("title")
 
 		if curU.GetName() == "" {
-			info.Println("ERROR: You have not logged in yet, please log in first!")
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return
 		}
 
 		if title == "" {
-			info.Println("ERROR: Please input the title of the meeting you want to delete")
+			logger.Println("ERROR: Please input the title of the meeting you want to delete")
 			return
 		}
 
@@ -57,9 +54,9 @@ to quickly create a Cobra application.`,
 		}
 
 		if instance.DeleteMeeting(mfilter) > 0 {
-			info.Println("Delete successfully!")
+			logger.Println("Delete successfully!")
 		} else {
-			info.Println("ERROR: you don't sponsor this meeting")
+			logger.Println("ERROR: you don't sponsor this meeting")
 			return
 		}
 	},

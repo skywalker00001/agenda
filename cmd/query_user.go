@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -32,12 +30,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//fmt.Println("queryUser called")
+		logger := entity.NewLogger("[qyu]")
+		logger.Println("You are calling qyu")
 
 		instance := entity.GetStorage()
 
 		if instance.GetCurUser().GetName() == "" {
-			log.Println("You have not logged in yet, please log in first!")
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return
 		}
 
@@ -46,10 +45,10 @@ to quickly create a Cobra application.`,
 		}
 		ulist := instance.QueryUser(filter)
 
-		log.Println("Name Email Telephone")
+		logger.Println("Name Email Telephone")
 
 		for i, user := range ulist {
-			log.Printf("User%d: %s %s %s\n", i+1, user.Name, user.Email, user.Phone)
+			logger.Printf("User%d: %s %s %s\n", i+1, user.Name, user.Email, user.Phone)
 		}
 	},
 }

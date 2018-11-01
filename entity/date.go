@@ -107,7 +107,7 @@ func (d Date) IsValid() bool {
 	return true
 }
 
-// stringToDate convert a date string to a Date type
+// StringToDate convert a date string to a Date type
 // param: a string with format YYYY-MM-DD/HH:mm
 // if the string doesn't fit the format,
 // return an uncompleted Date struct
@@ -155,7 +155,7 @@ func StringToDate(dateString string) Date {
 	return d
 }
 
-// dateToString convert a Date struct to a string
+// DateToString convert a Date struct to a string
 // with format YYYY-MM-DD/HH:mm
 func DateToString(date Date) string {
 	if date.IsValid() {

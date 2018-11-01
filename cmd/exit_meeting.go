@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -32,15 +30,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//fmt.Println("exitMeeting called")
+		logger := entity.NewLogger("[exitm]")
+		logger.Println("You are calling exitm")
+
 		title, _ := cmd.Flags().GetString("title")
 		if title == "" {
-			fmt.Println("You have not set the title yet, please do it first!")
+			logger.Println("ERROR: You have not set the title yet, please do it first!")
 		}
 
 		instance := entity.GetStorage()
 		if instance.GetCurUser().GetName() == "" {
-			fmt.Println("You have not already logged in, please log in first!")
+			logger.Println("ERROR: You have not already logged in, please log in first!")
 			return
 		}
 
@@ -65,9 +65,9 @@ to quickly create a Cobra application.`,
 		num2 := instance.UpdateMeeting(filter2, switcher2)
 
 		if num1+num2 != 0 {
-			fmt.Println("Exit meeting successfully!")
+			logger.Println("Exit meeting successfully!")
 		} else {
-			fmt.Println("You have not participated in this meeting!")
+			logger.Println("ERROR: You have not participated in this meeting!")
 		}
 	},
 }

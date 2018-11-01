@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/7cthunder/agenda/entity"
 
 	"github.com/spf13/cobra"
@@ -35,15 +33,18 @@ var deleteMeetingUserCmd = &cobra.Command{
 		title, _ := cmd.Flags().GetString("title")
 		participators := cmd.Flags().Args()
 
+		logger := entity.NewLogger("[delmu]")
+		logger.Println("You are calling delmu")
+
 		storage := entity.GetStorage()
 
 		if storage.GetCurUser().GetName() == "" {
-			log.Println("You have not logged in yet, please log in first!")
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return
 		}
 
 		if title == "" {
-			log.Println("You do not enter a title for meeting, please enter it!")
+			logger.Println("ERROR: You do not enter a title for meeting, please enter it!")
 			return
 		}
 
@@ -53,23 +54,23 @@ var deleteMeetingUserCmd = &cobra.Command{
 
 		meetings := storage.QueryMeeting(mfilter)
 		if len(meetings) == 0 {
-			log.Println("This meeting is not existed, please enter a correct title!")
+			logger.Println("ERROR: This meeting is not existed, please enter a correct title!")
 			return
 		}
 
 		if meetings[0].GetSponsor() != storage.GetCurUser().GetName() {
-			log.Println("You're not this meeting's sponsor, so you have no permission to delete participators!")
+			logger.Println("ERROR: You're not this meeting's sponsor, so you have no permission to delete participators!")
 			return
 		}
 
 		if len(participators) == 0 {
-			log.Println("Please enter who you want to remove from this meeting!")
+			logger.Println("ERROR: Please enter who you want to remove from this meeting!")
 			return
 		}
 
 		for _, p := range participators {
 			if p == meetings[0].GetSponsor() {
-				log.Println("You can't delete yourself from this meeting for you're the sponsor for it! If you want to delete this meeting, please use command 'delm'!")
+				logger.Println("ERROR: You can't delete yourself from this meeting for you're the sponsor for it! If you want to delete this meeting, please use command 'delm'!")
 				return
 			}
 			isInMeeting := false
@@ -79,7 +80,7 @@ var deleteMeetingUserCmd = &cobra.Command{
 				}
 			}
 			if !isInMeeting {
-				log.Println(p, "is not in this meeting, please check the participators list of this meeting!")
+				logger.Println("ERROR:", p, "is not in this meeting, please check the participators list of this meeting!")
 				return
 			}
 		}
@@ -100,7 +101,7 @@ var deleteMeetingUserCmd = &cobra.Command{
 			})
 		}
 
-		log.Println("You have successfully removed your designated participant from this meeting!")
+		logger.Println("You have successfully removed your designated participant from this meeting!")
 
 	},
 }

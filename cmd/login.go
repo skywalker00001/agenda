@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -36,19 +34,22 @@ to quickly create a Cobra application.`,
 		username, _ := cmd.Flags().GetString("username")
 		password, _ := cmd.Flags().GetString("password")
 
+		logger := entity.NewLogger("[login]")
+		logger.Println("You are calling login")
+
 		instance := entity.GetStorage()
 
 		if instance.GetCurUser().GetName() != "" {
-			log.Println("You have already logged in, please log out first!")
+			logger.Println("ERROR: You have already logged in, please log out first!")
 			return
 		}
 
 		if username == "" {
-			log.Println("You do not enter username, please input again!")
+			logger.Println("ERROR: You do not enter username, please input again!")
 			return
 		}
 		if password == "" {
-			log.Println("You do not enter password, please input again!")
+			logger.Println("ERROR: You do not enter password, please input again!")
 			return
 		}
 
@@ -59,10 +60,10 @@ to quickly create a Cobra application.`,
 		ulist := instance.QueryUser(filter)
 
 		if len(ulist) == 0 {
-			log.Println("Wrong username or password!")
+			logger.Println("ERROR: Wrong username or password!")
 		} else {
 			instance.SetCurUser(ulist[0])
-			log.Println("Log in successfully!")
+			logger.Println("Log in successfully!")
 		}
 	},
 }
