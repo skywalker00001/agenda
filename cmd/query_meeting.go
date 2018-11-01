@@ -23,12 +23,9 @@ import (
 var queryMeetingCmd = &cobra.Command{
 	Use:   "qym",
 	Short: "Query meetings start from [startTime] to [endTime]",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Query meetings start from [startTime] to [endTime]:
+	1.Make sure you have enter the start time and the end time
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := entity.NewLogger("[qym]")
 		logger.Println("You are calling qym")
@@ -58,7 +55,12 @@ to quickly create a Cobra application.`,
 		}
 		mlist := instance.QueryMeeting(filter)
 
-		logger.Println("Sponsor Title StartTime EndTime")
+		if len(mlist) == 0 {
+			logger.Println("You have no meetings at this time.")
+			return
+		} else {
+			logger.Println("Seq_num  Sponsor  Title  StartTime  EndTime")
+		}
 
 		for i, meeting := range mlist {
 			logger.Printf("Meeting%d: %s %s %s %s\n", i+1, meeting.GetSponsor(), meeting.GetTitle(), startTime, endTime)
@@ -80,13 +82,4 @@ func init() {
 	rootCmd.AddCommand(queryMeetingCmd)
 	queryMeetingCmd.Flags().StringP("stime", "s", "", "start time of the meeting")
 	queryMeetingCmd.Flags().StringP("etime", "e", "", "end time of the meeting")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// queryMeetingCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// queryMeetingCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
