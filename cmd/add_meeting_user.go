@@ -15,9 +15,6 @@
 package cmd
 
 import (
-	"io"
-	"os"
-	"log"
 	entity "github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -33,27 +30,26 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		file, _ := os.OpenFile("./data/log.txt", os.O_CREATE | os.O_WRONLY | os.O_APPEND, 0666)
-		info := log.New(io.MultiWriter(file, os.Stdout), "[addmu]", log.Ldate | log.Ltime)
+		logger := entity.NewLogger("[addmu]")
 
-		info.Println("You are calling addmu")
+		logger.Println("You are calling addmu")
 
 		instance := entity.GetStorage()
 		curU := instance.GetCurUser()
 		title, _ := cmd.Flags().GetString("title")
 		participators := cmd.Flags().Args()
 		if curU.GetName() == "" {
-			info.Println("ERROR: You have not logged in yet, please log in first!")
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return
 		}
 
 		if title == "" {
-			info.Println("ERROR: Please input the title of the meeting you want to delete")
+			logger.Println("ERROR: Please input the title of the meeting you want to delete")
 			return
 		}
 
 		if len(participators) == 0 {
-			info.Println("ERROR: You must add someone")
+			logger.Println("ERROR: You must add someone")
 			return
 		}
 
@@ -62,7 +58,7 @@ to quickly create a Cobra application.`,
 				return u.GetName() == participators[i]
 			}
 			if len(instance.QueryUser(filter)) == 0 {
-				info.Println("ERROR: " + participators[i] + " isn't existed")
+				logger.Println("ERROR: " + participators[i] + " isn't existed")
 				return
 			}
 		}
@@ -72,14 +68,14 @@ to quickly create a Cobra application.`,
 		}
 		meeting := instance.QueryMeeting(filter1)
 		if len(meeting) == 0 {
-			info.Println("ERROR: You don't sponsor this meeting")
+			logger.Println("ERROR: You don't sponsor this meeting")
 			return
 		}
 
 		for i := 0; i < len(participators); i++ {
 			for j := i + 1; j < len(participators); j++ {
 				if participators[i] == participators[j] {
-					info.Println("ERROR: The participators you add can't repeat")
+					logger.Println("ERROR: The participators you add can't repeat")
 					return
 				}
 			}
@@ -87,14 +83,14 @@ to quickly create a Cobra application.`,
 
 		for _, p := range participators {
 			if meeting[0].IsParticipator(p) {
-				info.Println("ERROR: " + p + " is in the meeting")
+				logger.Println("ERROR: " + p + " is in the meeting")
 				return
 			}
 		}
 
 		for _, p := range participators {
 			if curU.GetName() == p {
-				info.Println("ERROR: You add yourself wrongly")
+				logger.Println("ERROR: You add yourself wrongly")
 				return
 			}
 		}
@@ -114,7 +110,7 @@ to quickly create a Cobra application.`,
 				return false
 			}
 			if len(instance.QueryMeeting(filter2)) > 0 {
-				info.Println("ERROR: There are conflicts between  " + p + "'s time and meeting's time ")
+				logger.Println("ERROR: There are conflicts between  " + p + "'s time and meeting's time ")
 				return
 			}
 		}
@@ -125,7 +121,7 @@ to quickly create a Cobra application.`,
 			}
 			instance.UpdateMeeting(filter1, mSwitch)
 		}
-		info.Println("addmu successfully!")
+		logger.Println("addmu successfully!")
 	},
 }
 

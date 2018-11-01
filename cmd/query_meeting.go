@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -32,19 +30,21 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//fmt.Println("queryMeeting called")
+		logger := entity.NewLogger("[qym]")
+		logger.Println("You are calling qym")
+
 		startTime, _ := cmd.Flags().GetString("stime")
 		endTime, _ := cmd.Flags().GetString("etime")
 
 		if startTime == "" || endTime == "" {
-			fmt.Println("You have not set the start time or end time of the meeting yet, please do it first!")
+			logger.Println("ERROR: You have not set the start time or end time of the meeting yet, please do it first!")
 			return
 		}
 
 		instance := entity.GetStorage()
 
 		if instance.GetCurUser().GetName() == "" {
-			fmt.Println("You have not logged in yet, please log in first!")
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return
 		}
 
@@ -58,18 +58,18 @@ to quickly create a Cobra application.`,
 		}
 		mlist := instance.QueryMeeting(filter)
 
-		fmt.Println("Sponsor Title StartTime EndTime")
+		logger.Println("Sponsor Title StartTime EndTime")
 
 		for i, meeting := range mlist {
-			fmt.Printf("Meeting%d: %s %s %s %s\n", i+1, meeting.GetSponsor(), meeting.GetTitle(), startTime, endTime)
-			fmt.Printf("Meeting%d-Participators:", i+1)
+			logger.Printf("Meeting%d: %s %s %s %s\n", i+1, meeting.GetSponsor(), meeting.GetTitle(), startTime, endTime)
+			logger.Printf("Meeting%d-Participators:", i+1)
 			participators := meeting.GetParticipators()
 			for j := 0; j < len(participators); j++ {
-				fmt.Printf("%s", participators[j])
+				logger.Printf("%s", participators[j])
 				if j != len(participators)-1 {
-					fmt.Printf(", ")
+					logger.Printf(", ")
 				} else {
-					fmt.Printf("\n")
+					logger.Printf("\n")
 				}
 			}
 		}

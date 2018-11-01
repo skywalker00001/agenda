@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -33,13 +31,16 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		logger := entity.NewLogger("[logout]")
+		logger.Println("You are calling logout")
+
 		instance := entity.GetStorage()
 
 		if instance.GetCurUser().GetName() == "" {
-			log.Println("You have not logged in yet, please log in first!")
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
 		} else {
 			instance.SetCurUser(*entity.NewUser("", "", "", ""))
-			log.Println("Log out successfully!")
+			logger.Println("Log out successfully!")
 		}
 	},
 }

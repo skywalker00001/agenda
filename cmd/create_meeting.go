@@ -15,8 +15,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
@@ -32,33 +30,34 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//fmt.Println("createMeeting called")
 		title, _ := cmd.Flags().GetString("title")
 		startTimeS, _ := cmd.Flags().GetString("starttime")
 		endTimeS, _ := cmd.Flags().GetString("endtime")
-		//ptcpt, _ := cmd.Flags().GetStringSlice("participator")
 		ptcpt := cmd.Flags().Args()
+
+		logger := entity.NewLogger("[cm]")
+		logger.Println("You are calling cm")
 
 		instance := entity.GetStorage()
 
 		if instance.GetCurUser().GetName() == "" {
-			fmt.Println("You have not logged in yet, please log in first!")
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
 			return
 		}
 		if title == "" {
-			fmt.Println("You do not enter title, please input again!")
+			logger.Println("ERROR: You do not enter title, please input again!")
 			return
 		}
 		if startTimeS == "" {
-			fmt.Println("You do not enter start time, please input again!")
+			logger.Println("ERROR: You do not enter start time, please input again!")
 			return
 		}
 		if endTimeS == "" {
-			fmt.Println("You do not enter end time, please input again!")
+			logger.Println("ERROR: You do not enter end time, please input again!")
 			return
 		}
 		if len(ptcpt) == 0 {
-			fmt.Println("No participator!")
+			logger.Println("ERROR: No participator!")
 			return
 		}
 
@@ -67,15 +66,15 @@ to quickly create a Cobra application.`,
 		endTime := entity.StringToDate(endTimeS)
 
 		if !startTime.IsValid() {
-			fmt.Println("Invalid start time!")
+			logger.Println("ERROR: Invalid start time!")
 			return
 		}
 		if !endTime.IsValid() {
-			fmt.Println("Invalid end time!")
+			logger.Println("ERROR: Invalid end time!")
 			return
 		}
 		if startTime.IsGreaterThanEqual(endTime) {
-			fmt.Println("Start time cannot be later or equal than end time!")
+			logger.Println("ERROR: Start time cannot be later or equal than end time!")
 			return
 		}
 
@@ -83,13 +82,13 @@ to quickly create a Cobra application.`,
 			return m.GetTitle() == title
 		}
 		if len(instance.QueryMeeting(mfilter1)) > 0 {
-			fmt.Println("Duplicate title, please change it!")
+			logger.Println("ERROR: Duplicate title, please change it!")
 			return
 		}
 
 		for _, p := range ptcpt {
 			if p == sponsor {
-				fmt.Println("Sponsor cannot be participator!")
+				logger.Println("ERROR: Sponsor cannot be participator!")
 				return
 			}
 		}
@@ -97,26 +96,18 @@ to quickly create a Cobra application.`,
 		for i := 0; i < len(ptcpt); i++ {
 			for j := i + 1; j < len(ptcpt); j++ {
 				if ptcpt[i] == ptcpt[j] {
-					fmt.Println("Duplicate participators!")
+					logger.Println("ERROR: Duplicate participators!")
 					return
 				}
 			}
 		}
-
-		// ufilter1 := func(u *entity.User) bool {
-		// 	return u.GetName() == sponsor
-		// }
-		// if len(instance.QueryUser(ufilter1)) == 0 {
-		// 	fmt.Println("Non-existent sponsor!")
-		// 	return
-		// }
 
 		for _, p := range ptcpt {
 			ufilter1 := func(u *entity.User) bool {
 				return u.GetName() == p
 			}
 			if len(instance.QueryUser(ufilter1)) == 0 {
-				fmt.Println("There is at least one non-existent participator!")
+				logger.Println("ERROR: There is at least one non-existent participator!")
 				return
 			}
 		}
@@ -132,7 +123,7 @@ to quickly create a Cobra application.`,
 			return true
 		}
 		if len(instance.QueryMeeting(mfilter2)) > 0 {
-			fmt.Println("Sponsor's time conflict!")
+			logger.Println("ERROR: Sponsor's time conflict!")
 			return
 		}
 
@@ -148,11 +139,11 @@ to quickly create a Cobra application.`,
 				return true
 			}
 			if len(instance.QueryMeeting(mfilter3)) > 0 {
-				fmt.Println("Participator's time conflict!")
+				logger.Println("ERROR: Participator's time conflict!")
 				return
 			}
 		}
-		fmt.Println("Create meeting successfully!")
+		logger.Println("Create meeting successfully!")
 		instance.CreateMeeting(*entity.NewMeeting(sponsor, title, startTime, endTime, ptcpt))
 	},
 }
