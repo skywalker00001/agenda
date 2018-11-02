@@ -1,10 +1,27 @@
 # Agenda
 
+## 1.简介
+Agenda 是一个简单的 CLI 会议管理系统
+
+### 1.1 测试
+由于 cmd 不便于编写 test 文件，故使用指定测试集，手动测试命令，目前并未出现 Bug，如遇 Bug，可以写 issue，我们会及时处理！
+
+### 1.2 安装
+1. 确保你已经安装 Golang 编程环境，如未安装，可参考 [服务计算 | Golang 入门与配置](https://7cthunder.github.io/2018/09/27/%E6%9C%8D%E5%8A%A1%E8%AE%A1%E7%AE%97-Golang-%E5%85%A5%E9%97%A8%E4%B8%8E%E9%85%8D%E7%BD%AE/)
+2. 使用 `go get github.com/7cthunder/agenda` 下载项目
+3. 使用 `go install github.com/7cthunder/agenda` 进行编译安装
+
+### 1.3 使用
+参考 [cmd-design.md](https://github.com/7cthunder/agenda/blob/master/cmd-design.md) 手册，也可以使用 `help` 命令来提示输入信息。
+
+
+## 2.接口实现
+
 `entity`负责创建实体与操作实体，`cmd`负责程序的逻辑
 
-## entity
+### 2.1 entity
 
-### User
+#### 2.1.1 User
 
 `NewUser`创建一个`User`实体并返回它的指针 
 
@@ -27,7 +44,7 @@ SetEmail func(newEmail string)
 SetPhone func(newPhone string)
 ```
 
-### Date
+#### 2.1.2 Date
 
 `NewDate`创建一个`Date`实体并返回它的指针
 
@@ -77,7 +94,7 @@ IsGreaterThanEqual func(date Date) bool
 IsLessThanEqual func(date Date) bool
 ```
 
-### Meeting
+#### 2.1.3 Meeting
 
 `NewMeeting`创建一个`Meeting`实体并返回它的指针
 
@@ -120,7 +137,7 @@ RemoveParticipator func(participator string)
 IsParticipator func(username string) bool
 ```
 
-### Storage
+#### 2.1.4 Storage
 
 **注意：Storage的方法如果调用成功会自动写入`curUser.txt`, `Meeting.json`和`User.json`**
 
@@ -208,7 +225,7 @@ SetCurUser func(u User)
 SetCurUser func(u User)
 ```
 
-### Logger
+#### 2.1.5 Logger
 
 `NewLogger`根据传入的前缀来创建新的`logger`，其可同时写入`log.txt`和显示在屏幕上
 
