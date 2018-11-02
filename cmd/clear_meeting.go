@@ -15,8 +15,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	entity "github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
 
@@ -24,27 +23,31 @@ import (
 var clearMeetingCmd = &cobra.Command{
 	Use:   "clm",
 	Short: "Clear all meetings which current user created",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Clear all meetings which current user created`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("clearMeeting called")
+		logger := entity.NewLogger("[clm]")
+		logger.Println("You are calling clm")
+
+		instance := entity.GetStorage()
+		curU := instance.GetCurUser()
+
+		if curU.GetName() == "" {
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
+			return
+		}
+
+		mfilter := func(m *entity.Meeting) bool {
+			return curU.GetName() == m.GetSponsor()
+		}
+
+		if instance.DeleteMeeting(mfilter) > 0 {
+			logger.Println("Delete successfully!")
+		} else {
+			logger.Println("ERROR: The User don't sponsor any meeting")
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(clearMeetingCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// clearMeetingCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// clearMeetingCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

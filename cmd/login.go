@@ -15,36 +15,60 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
 
 // loginCmd represents the login command
 var loginCmd = &cobra.Command{
-	Use:   "login",
+	Use:   "login -u=[username] -p=[password]",
 	Short: "Login with your username and password",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Login with your username and password:
+1. If you have logged in, you should log out first
+2. Make sure the username entered has been registered before, or if you do not have an account, you should register first
+3. Make sure you enter the right username and password, or you will fail to login`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("login called")
+		//fmt.Println("login called")
+		username, _ := cmd.Flags().GetString("username")
+		password, _ := cmd.Flags().GetString("password")
+
+		logger := entity.NewLogger("[login]")
+		logger.Println("You are calling login -u=" + username + " -p=" + password)
+
+		instance := entity.GetStorage()
+
+		if instance.GetCurUser().GetName() != "" {
+			logger.Println("ERROR: You have already logged in, please log out first!")
+			return
+		}
+
+		if username == "" {
+			logger.Println("ERROR: You do not enter username, please input again!")
+			return
+		}
+		if password == "" {
+			logger.Println("ERROR: You do not enter password, please input again!")
+			return
+		}
+
+		filter := func(u *entity.User) bool {
+			return u.GetName() == username && u.GetPassword() == password
+		}
+
+		ulist := instance.QueryUser(filter)
+
+		if len(ulist) == 0 {
+			logger.Println("ERROR: Wrong username or password!")
+		} else {
+			instance.SetCurUser(ulist[0])
+			logger.Println("Log in successfully!")
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(loginCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// loginCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// loginCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	loginCmd.Flags().StringP("username", "u", "", "login name")
+	loginCmd.Flags().StringP("password", "p", "", "login password")
 }
