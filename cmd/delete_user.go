@@ -15,8 +15,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/7cthunder/agenda/entity"
 	"github.com/spf13/cobra"
 )
 
@@ -24,14 +23,53 @@ import (
 var deleteUserCmd = &cobra.Command{
 	Use:   "delu",
 	Short: "Delete your account if you have logined",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: `Delete your account if you have logined:
+1. Please make sure you have logged in first
+2. You will delete the current user logged in. By the way, meetings which this user sponsored will be dissolved,
+meetings which this user participated will delete its name from paticipators set, if paticipators count is 0 after deleting,
+the meeting will also be dissolved`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("deleteUser called")
+
+		logger := entity.NewLogger("delu")
+		logger.Println("You are calling delu")
+
+		instance := entity.GetStorage()
+		curU := instance.GetCurUser()
+
+		if curU.GetName() != "" {
+			logger.Println("ERROR: You have not logged in yet, please log in first!")
+			return
+		}
+
+		ufilter := func(u *entity.User) bool {
+			return u.GetName() == curU.GetName()
+		}
+
+		mfilter1 := func(m *entity.Meeting) bool {
+			return m.GetSponsor() == curU.GetName()
+		}
+		mfilter2 := func(m *entity.Meeting) bool {
+			return m.IsParticipator(curU.GetName())
+		}
+		mswitcher := func(m *entity.Meeting) {
+			m.RemoveParticipator(curU.GetName())
+		}
+
+		if instance.DeleteUser(ufilter) > 0 {
+			instance.DeleteMeeting(mfilter1)
+			if instance.UpdateMeeting(mfilter2, mswitcher) > 0 {
+				mfilter3 := func(m *entity.Meeting) bool {
+					return len(m.GetParticipators()) == 0
+				}
+				instance.DeleteMeeting(mfilter3)
+			}
+			instance.SetCurUser(*entity.NewUser("", "", "", ""))
+			logger.Println("Delete successfully!")
+
+		} else {
+			logger.Println("ERROR: Fail to delete!")
+		}
+
 	},
 }
 
